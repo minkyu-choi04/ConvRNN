@@ -1,5 +1,5 @@
 # ConvRNN in Pytorch
-This codes are for Spatial RNN. Both convolutional LSTM and convolutional GRU are implemented in Pytorch. Compuation under GPU/CPU are both supported. 
+This codes are for `Spatial RNN`. Both `convolutional LSTM` and `convolutional GRU` are implemented in `Pytorch`. Compuation under `GPU/CPU` are both supported. 
 
 ## Usage
 For `LSTM`,
