@@ -1,6 +1,5 @@
 import ConvLSTM
 import ConvGRU
-import web_convlstm
 import numpy as np
 import torch
 import torch.nn as nn
@@ -20,7 +19,7 @@ isLSTM = True#: GRU
 # learning description
 learning_rate = 0.1
 isGPU = False 
-epoch_size = 1500
+epoch_size = 1000
 # Convolution for out from RNN state
 conv_out = nn.Conv2d(in_channels=hidden_size, 
         out_channels=channel_size,
@@ -29,12 +28,12 @@ conv_out = nn.Conv2d(in_channels=hidden_size,
 
 print('Set model layer\n')
 if isLSTM:
-    layer1 = ConvLSTM.ConvLSTMCell((channel_size, height, width), hidden_size, (kernel_size, kernel_size), isGPU)
+    layer1 = ConvLSTM.ConvLSTMCell((channel_size, height, width), hidden_size, (kernel_size, kernel_size), batch_size, isGPU)
 else:
-    layer1 = ConvGRU.ConvGRUCell((channel_size, height, width), hidden_size, (kernel_size, kernel_size), isGPU)
+    layer1 = ConvGRU.ConvGRUCell((channel_size, height, width), hidden_size, (kernel_size, kernel_size), batch_size, isGPU)
 
 print('Set input/target\n')
-data = Variable(torch.rand(step_size, batch_size, channel_size, height, width))
+data = torch.rand(step_size, batch_size, channel_size, height, width)
 
 print('Set criterion and optimizer\n')
 criterion = nn.MSELoss()
@@ -52,7 +51,7 @@ else:
 
 print('Start training\n')
 for epoch in range(epoch_size):
-    state_prev = layer1.set_init_hidden_state(batch_size)
+    state_prev = layer1.init_hidden
     loss = 0
     out_list = []
     for step in range(step_size-1):
@@ -60,6 +59,7 @@ for epoch in range(epoch_size):
         pred = conv_out(state_cur[0]) if isLSTM else conv_out(state_cur)
         loss += criterion(pred, data[step+1])
         out_list.append(pred)
+        state_prev = state_cur
 
     optimizer.zero_grad()
     loss.backward()
@@ -71,8 +71,3 @@ print(pred)
 print('Sample target\n')
 print(data[step+1])
 print('End training\n')
-
-
-
-
-

@@ -1,13 +1,14 @@
-import torch
+import torch   
 import torch.nn as nn
 from torch.autograd import Variable
 
 class ConvGRUCell(nn.Module):
-    def __init__(self, input_shape, hidden_c, kernel_shape, isGPU):
+    def __init__(self, input_shape, hidden_c, kernel_shape, batch_size, isGPU):
         """
         input_shape: (channel, h, w)
         hidden_c: the number of hidden channel.
         kernel_shape: (h, w)
+        batch_size: batch_size
         isGPU: True/False
         """
         super().__init__()
@@ -17,6 +18,9 @@ class ConvGRUCell(nn.Module):
         self.padding_same_h = self.kernel_h // 2
         self.padding_same_w = self.kernel_w // 2
         self.isGPU = isGPU
+
+        # Initial states for GRU
+        self.init_hidden = nn.Parameter(torch.zeros(batch_size, self.hidden_c, self.input_h, self.input_w))
         
         self.gate_conv = nn.Conv2d(in_channels=self.input_c + self.hidden_c,
                 out_channels=self.hidden_c * 2, 
