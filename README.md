@@ -27,4 +27,8 @@ python test_convRNN.py
 This test code performs simple video prediction task with random input/target. 
 
 ## Environment
-This codes are tested under `Ubuntu 18.04` and `Pytorch 0.4.1`. 
+This codes are tested under `Ubuntu 18.04`, `Python 3.5`, `Pytorch 0.4.1`. 
+
+## To do
+1. delete 'Variable'
+2. make initial state trainable. 
