@@ -47,11 +47,3 @@ class ConvGRUCell(nn.Module):
         state_cur = state_prev * (1 - gate_update) + in_state * gate_update
 
         return state_cur
-
-    def set_init_hidden_state(self, batch_size):
-        if self.isGPU:
-            self.init_hidden = Variable(torch.zeros(batch_size, self.hidden_c, self.input_h, self.input_w)).cuda()
-        else:
-            self.init_hidden = Variable(torch.zeros(batch_size, self.hidden_c, self.input_h, self.input_w))
-            
-        return self.init_hidden
