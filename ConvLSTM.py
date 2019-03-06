@@ -31,12 +31,6 @@ class ConvLSTMCell(nn.Module):
                 stride=1, 
                 padding=(self.padding_same_h, self.padding_same_w))
 
-        self.cal =  nn.Conv2d(in_channels=hidden_c, 
-                out_channels=input_shape[0], 
-                kernel_size=(3,3), 
-                stride=1,
-                padding=(3//2, 3//2))
-
     def forward(self, input_cur, state_prev):
         hidden_prev, cell_prev = state_prev
         input_concat = torch.cat([input_cur, hidden_prev], dim=1) # (batch, c, h, w)
