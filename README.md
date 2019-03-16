@@ -20,11 +20,5 @@ layer1 = ConvGRU.ConvGRUCell(input_shape=(channel, height, width),
                              isGPU=True)
 ```
 
-You may test these modules with `test_convRNN.py` by selecting `ConvLSTM/ConvGRU` and `GPU/CPU`.
-```
-python test_convRNN.py
-```
-This test code performs simple video prediction task with random input/target. 
-
 ## Environment
 This codes are tested under `Ubuntu 18.04`, `Python 3.5`, `Pytorch 0.4.1`. 
