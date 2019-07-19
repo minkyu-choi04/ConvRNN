@@ -7,8 +7,7 @@ For `LSTM`,
 import ConvLSTM
 layer1 = ConvLSTM.ConvLSTMCell(input_shape=(channel, height, width),
                                hidden_c=hidden_channel_of_LSTM,
-                               kernel_shape=(kernel_h, kernel_w), 
-                               isGPU=True)
+                               kernel_shape=(kernel_h, kernel_w)) 
 ```
 
 For `GRU`, 
@@ -16,8 +15,7 @@ For `GRU`,
 import ConvGRU
 layer1 = ConvGRU.ConvGRUCell(input_shape=(channel, height, width),
                              hidden_c=hidden_channel_of_GRU,
-                             kernel_shape=(kernel_h, kernel_w), 
-                             isGPU=True)
+                             kernel_shape=(kernel_h, kernel_w)) 
 ```
 
 ## Environment
