@@ -3,7 +3,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 
 class ConvLSTMCell(nn.Module):
-    def __init__(self, input_shape, hidden_c, kernel_shape):
+    def __init__(self, input_shape, hidden_c, kernel_shape, pad_mod='replicate'):
         """
         input_shape: (channel, h, w)
         hidden_c: the number of hidden channel.
@@ -24,7 +24,8 @@ class ConvLSTMCell(nn.Module):
                 out_channels=self.hidden_c * 4, 
                 kernel_size=(self.kernel_h, self.kernel_w), 
                 stride=1, 
-                padding=(self.padding_same_h, self.padding_same_w))
+                padding=(self.padding_same_h, self.padding_same_w), 
+                padding_mode=pad_mod)
         self.norm = nn.GroupNorm(32*4, self.hidden_c*4)
 
     def forward(self, input_cur, state_prev):

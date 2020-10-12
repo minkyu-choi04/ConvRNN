@@ -3,7 +3,7 @@ import torch.nn as nn
 from torch.autograd import Variable
 
 class ConvGRUCell(nn.Module):
-    def __init__(self, input_shape, hidden_c, kernel_shape):
+    def __init__(self, input_shape, hidden_c, kernel_shape, pad_mod='replicate'):
         """
         input_shape: (channel, h, w)
         hidden_c: the number of hidden channel.
@@ -17,20 +17,22 @@ class ConvGRUCell(nn.Module):
         self.padding_same_w = self.kernel_w // 2
 
         # Initial states for GRU
-        self.init_hidden = nn.Parameter(torch.zeros(1, self.hidden_c, self.input_h, self.input_w))
+        self.init_hidden = nn.Parameter(torch.randn(1, self.hidden_c, self.input_h, self.input_w), requires_grad=True)
         
         self.gate_conv = nn.Conv2d(in_channels=self.input_c + self.hidden_c,
                 out_channels=self.hidden_c * 2, 
                 kernel_size=(self.kernel_h, self.kernel_w), 
                 stride=1, 
-                padding=(self.padding_same_h, self.padding_same_w))
+                padding=(self.padding_same_h, self.padding_same_w),
+                padding_mode=pad_mod)
         self.norm = nn.GroupNorm(32*2, self.hidden_c*2)
 
         self.in_conv = nn.Conv2d(in_channels=self.input_c + self.hidden_c, 
                 out_channels=self.hidden_c, 
                 kernel_size=(self.kernel_h, self.kernel_w), 
                 stride=1, 
-                padding=(self.padding_same_h, self.padding_same_w))
+                padding=(self.padding_same_h, self.padding_same_w),
+                padding_mode=pad_mod) # 20200918 modified. 
         self.norm_in = nn.GroupNorm(32, self.hidden_c)
 
     def forward(self, input_cur, state_prev):
