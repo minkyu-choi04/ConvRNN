@@ -30,7 +30,7 @@ class ConvGRUCell(nn.Module):
                 padding_mode=pad_mod)
         self.norm = nn.GroupNorm(GN*2, self.hidden_c*2)
 
-        self.in_conv = nn.Conv2d(in_channels=self.input_c + self.hidden_c, 
+        self.in_conv = nn.Conv2d(in_channels=self.input_c-1, 
                 out_channels=self.hidden_c, 
                 kernel_size=(self.kernel_h, self.kernel_w), 
                 stride=1, 
@@ -38,15 +38,17 @@ class ConvGRUCell(nn.Module):
                 padding_mode=pad_mod) # 20200918 modified. 
         self.norm_in = nn.GroupNorm(GN, self.hidden_c)
 
-    def forward(self, input_cur, state_prev):
-        input_concat = torch.cat([input_cur, state_prev], dim=1) # (batch, c, h, w)
+    def forward(self, input_cur, ior, state_prev):
+        input_cur_ior = torch.cat((input_cur, ior), 1)
+        input_concat = torch.cat([input_cur_ior, state_prev], dim=1) # (batch, c, h, w)
         gates = self.norm(self.gate_conv(input_concat))
         gate_update, gate_reset = gates.chunk(2, 1)
         gate_update = torch.sigmoid(gate_update)
         gate_reset = torch.sigmoid(gate_reset)
 
-        input_concat_reset = torch.cat([input_cur, state_prev*gate_reset], dim=1)
-        in_state = self.norm_in(self.in_conv(input_concat_reset))
+        #input_concat_reset = torch.cat([input_cur, state_prev*gate_reset], dim=1)
+        in_state = self.norm_in(self.in_conv(input_cur))
+        #in_state = input_cur
         
         if self.active_fn == 'tanh':
             in_state = torch.tanh(in_state)
